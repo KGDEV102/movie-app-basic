@@ -16,8 +16,8 @@ function Navbar() {
           </ul>
         </div>
         <div className="flex items-center gap-5">
-          <input type="text" placeholder="Seach..." className="p-3 text-black/80 bg-white rounded" />
-          <button className="bg-red-500 p-2 rounded-lg">Search</button>
+          <input type="text" placeholder="Seach..." className="p-2 text-black/80 bg-white rounded outline-none" />
+          <button className="bg-red-500 w-[70px] h-[35px] rounded-lg cursor-pointer hover:bg-red-400">Search</button>
         </div>
       </div>
     );
