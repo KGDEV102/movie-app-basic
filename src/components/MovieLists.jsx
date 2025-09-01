@@ -1,10 +1,12 @@
-import temp_1 from "../assets/temp-1.jpeg";
+
 import play_button from "../assets/play-button.png";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import YouTube from "react-youtube";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Modal from "react-modal";
+import { movieService } from "../Service/MovieService";
+import { BiArrowBack } from "react-icons/bi";
 const customStyles = {
   content: {
     top: "50%",
@@ -13,6 +15,10 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+  },
+    overlay: {
+    position: "fixed",
+    zIndex: 9999,
   },
 };
  const opts = {
@@ -44,7 +50,7 @@ const responsive = {
   },
 };
 
-function MovieLists({ title, data }) {
+function MovieLists({ title, data,onBack }) {
      const [modalIsOpen, setIsOpen] = useState(false);
 
      function openModal() {
@@ -57,24 +63,12 @@ function MovieLists({ title, data }) {
     const [videoActive, setVideoActive] = useState("");
    
     const handleClick = async(id) => {
-        try {
-            const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`;
-            const options = {
-                method: "GET",
-                headers: {
-                    accept: "application/json",
-                    Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-                },
-            };
-            const res = await fetch(url, options);
-            const videoId = await res.json();
-            console.log(videoId.results[0].key);
-            setVideoActive(videoId.results[0].key);
-            openModal();
-        } catch (error) {
-            console.log(error);
-        }
-        
+      
+         const videoId = await movieService.getVideo(id);
+         if (videoId.results?.length > 0) {
+           setVideoActive(videoId.results[0].key);
+           openModal();
+         }
           
      
     }
@@ -82,34 +76,49 @@ function MovieLists({ title, data }) {
       <div className="p-9 bg-black">
         <p className="text-2xl uppercase mb-5 text-white">{title}</p>
 
-        <Carousel responsive={responsive}>
-          {data.map((film) => (
-            <div
-              key={film.id}
-              className="relative group w-[200px] h-[300px] hover:scale-105 duration-500 ease-in-out cursor-pointer hover:shadow-xl hover:shadow-blue-500 "
-            >
-              <img
-                src={`${import.meta.env.VITE_IMAGE_URL}${film.backdrop_path}`}
-                alt={film.original_title || film.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/30 "></div>
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100"></div>
-              <p className="absolute bottom-2 left-5 text-white ">
-                {film.original_title || film.title}
-              </p>
-              <button
-                className="top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%] absolute  group-hover:opacity-100 opacity-0 cursor-pointer"
-                onClick={() => {
-                  handleClick(film.id);
-                }}
+       
+          {data.length > 0 ? (
+           <Carousel responsive={responsive}>
+              {
+                data.map((film) => (
+                  <div
+                    key={film.id}
+                    className="relative group w-[200px] h-[300px] hover:scale-105 duration-500 ease-in-out cursor-pointer hover:shadow-xl hover:shadow-blue-500 "
+                  >
+                    <img
+                      src={`${import.meta.env.VITE_IMAGE_URL}${film.backdrop_path}`}
+                      alt={film.original_title || film.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/30 "></div>
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100"></div>
+                    <p className="absolute bottom-2 left-5 text-white ">
+                      {film.original_title || film.title}
+                    </p>
+                    <button
+                      className="top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%] absolute  group-hover:opacity-100 opacity-0 cursor-pointer"
+                      onClick={() => {
+                        handleClick(film.id);
+                      }}
+                    >
+                      <img src={play_button} alt="" className="size-10 invert  " />
+                    </button>
+                  </div>
+                ))
+              }
+           </Carousel>
+          ) : (
+           <div className="w-full h-full text-white space-x-20 flex justify-between">
+                <span>Không tìm thấy</span>
+              <button className="flex items-center gap-2 cursor-pointer"
+                onClick={()=>{onBack(false)}}
               >
-                <img src={play_button} alt="" className="size-10 invert  " />
+                <BiArrowBack/>
+                Quay lại
               </button>
-            </div>
-          ))}
-        </Carousel>
-
+           </div>
+          )}
+      
         <Modal
           style={customStyles}
           isOpen={modalIsOpen}
