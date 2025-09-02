@@ -37,13 +37,14 @@ function Navbar({ setIsSearch,onSearch,loading}) {
           }}
         />
         <button
+          disabled={loading}
           className={`bg-red-500 w-[70px] h-[35px] rounded-lg cursor-pointer hover:bg-red-400 ${
             loading && "bg-red-400"
           }`}
           onClick={handleClick}
         >
           {loading ? (
-            <AiOutlineLoading3Quarters className="animate-spin" />
+            <AiOutlineLoading3Quarters className="animate-spin " />
           ) : (
             "Search"
           )}

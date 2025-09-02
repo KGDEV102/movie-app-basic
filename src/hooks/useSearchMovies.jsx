@@ -20,6 +20,8 @@ export const useSearchMovie = (text="") => {
                 setLoading(false);
             } catch {
                 setError(true);
+            } finally {
+                setLoading(false);
             }
         }
         fetchApi();

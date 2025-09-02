@@ -18,27 +18,41 @@ function App() {
   
   return (
     <>
-      <Navbar setIsSearch={setIsSearch} onSearch={setInputSearch} />
-      <Banner loading={loading} />
+      <Navbar
+        setIsSearch={setIsSearch}
+        onSearch={setInputSearch}
+        loading={loading}
+      />
+      <Banner />
       {isSearch ? (
         <div>
-          {loading && (<p className="text-white">Đang tải...</p>) }
-          {error &&  (<p>Lỗi, vui lòng thử lại sau...</p>)}
-          <MovieLists title={"Kết quả tìm kiếm"} data={movie} onBack={setIsSearch}/>
+          {error && <p>Lỗi, vui lòng thử lại sau...</p>}
+          <MovieLists
+            title={"Kết quả tìm kiếm"}
+            data={movie}
+            onBack={setIsSearch}
+            loading={loading}
+          />
         </div>
       ) : (
         <>
-        <div>
-              {popularLoading && (<p className="text-white">Đang tải...</p>)}
-              {errPopular && (<p>Lỗi, vui lòng thử lại sau...</p>)}
-              <MovieLists title={"Phim Hot"} data={movies} />
-        </div>
-           
-        <div>
-              {topRatedLoading && (<p className="text-white">Đang tải...</p>)}
-              {errTopRated && (<p>Lỗi, vui lòng thử lại sau...</p>)}
-          <MovieLists title={"Phim đề cử"} data={topRated} />
-        </div>
+          <div>
+            {errPopular && <p>Lỗi, vui lòng thử lại sau...</p>}
+            <MovieLists
+              title={"Phim Hot"}
+              data={movies}
+              loading={popularLoading}
+            />
+          </div>
+
+          <div>
+            {errTopRated && <p>Lỗi, vui lòng thử lại sau...</p>}
+            <MovieLists
+              title={"Phim đề cử"}
+              data={topRated}
+              loading={topRatedLoading}
+            />
+          </div>
         </>
       )}
     </>

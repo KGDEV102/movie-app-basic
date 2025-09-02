@@ -11,9 +11,11 @@ export const useMovies = (type) => {
                 setLoading(true);
                 const res = await movieService.getMovies(type);
                 setMovie(res.results);
-                setLoading(false);
+                
             } catch {
                 setError(true);
+            } finally {
+                setLoading(false);
            }
         }
         fetchApi();

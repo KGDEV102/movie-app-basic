@@ -7,6 +7,7 @@ import {  useState } from "react";
 import Modal from "react-modal";
 import { movieService } from "../Service/MovieService";
 import { BiArrowBack } from "react-icons/bi";
+import MovieCardSkelethon from "./MovieCardSkelethon";
 const customStyles = {
   content: {
     top: "50%",
@@ -50,7 +51,7 @@ const responsive = {
   },
 };
 
-function MovieLists({ title, data,onBack }) {
+function MovieLists({ title, data,onBack,loading }) {
      const [modalIsOpen, setIsOpen] = useState(false);
 
      function openModal() {
@@ -76,49 +77,61 @@ function MovieLists({ title, data,onBack }) {
       <div className="p-9 bg-black">
         <p className="text-2xl uppercase mb-5 text-white">{title}</p>
 
-       
-          {data.length > 0 ? (
-           <Carousel responsive={responsive}>
-              {
-                data.map((film) => (
-                  <div
-                    key={film.id}
-                    className="relative group w-[200px] h-[300px] hover:scale-105 duration-500 ease-in-out cursor-pointer hover:shadow-xl hover:shadow-blue-500 "
-                  >
-                    <img
-                      src={`${import.meta.env.VITE_IMAGE_URL}${film.backdrop_path}`}
-                      alt={film.original_title || film.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/30 "></div>
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100"></div>
-                    <p className="absolute bottom-2 left-5 text-white ">
-                      {film.original_title || film.title}
-                    </p>
-                    <button
-                      className="top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%] absolute  group-hover:opacity-100 opacity-0 cursor-pointer"
-                      onClick={() => {
-                        handleClick(film.id);
-                      }}
-                    >
-                      <img src={play_button} alt="" className="size-10 invert  " />
-                    </button>
-                  </div>
-                ))
-              }
-           </Carousel>
-          ) : (
-           <div className="w-full h-full text-white space-x-20 flex justify-between">
-                <span>Không tìm thấy</span>
-              <button className="flex items-center gap-2 cursor-pointer"
-                onClick={()=>{onBack(false)}}
+        {loading ? (
+          <div className="flex gap-2">
+            {Array(6).fill(0).map((_, index) => (
+              <MovieCardSkelethon key={index} />
+            ))}
+         </div>
+        ): (
+            data.length > 0 ? (
+          <Carousel responsive={responsive}>
+            {data.map((film) => (
+              <div
+                key={film.id}
+                className="relative group w-[200px] h-[300px] hover:scale-105 duration-500 ease-in-out cursor-pointer hover:shadow-xl hover:shadow-blue-500 "
               >
-                <BiArrowBack/>
-                Quay lại
-              </button>
-           </div>
-          )}
-      
+                <img
+                  src={
+                    film.backdrop_path
+                      ? `${import.meta.env.VITE_IMAGE_URL}${film.backdrop_path}`
+                      : "https://placehold.co/200x300"
+                  }
+                  alt={film.original_title || film.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/30 "></div>
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100"></div>
+                <p className="absolute bottom-2 left-5 text-white ">
+                  {film.original_title || film.title}
+                </p>
+                <button
+                  className="top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%] absolute  group-hover:opacity-100 opacity-0 cursor-pointer"
+                  onClick={() => {
+                    handleClick(film.id);
+                  }}
+                >
+                  <img src={play_button} alt="" className="size-10 invert  " />
+                </button>
+              </div>
+            ))}
+          </Carousel>
+        ) : (
+          <div className="w-full h-full text-white space-x-20 flex justify-between">
+            <span>Không tìm thấy</span>
+            <button
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => {
+                onBack(false);
+              }}
+            >
+              <BiArrowBack />
+              Quay lại
+            </button>
+          </div>
+        )
+        )}
+
         <Modal
           style={customStyles}
           isOpen={modalIsOpen}
