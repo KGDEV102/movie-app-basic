@@ -38,7 +38,7 @@ function Navbar({ setIsSearch,onSearch,loading}) {
         />
         <button
           disabled={loading}
-          className={`bg-red-500 w-[70px] h-[35px] rounded-lg cursor-pointer hover:bg-red-400 ${
+          className={`bg-red-500 w-[70px] h-[35px] flex items-center justify-center rounded-lg cursor-pointer hover:bg-red-400 ${
             loading && "bg-red-400"
           }`}
           onClick={handleClick}
